@@ -1,32 +1,16 @@
-from content.datas import filepaths
 
-import sys
 import pandas as pd
 import random
 import math
 from tqdm import tqdm
 
 
+ML_LATEST_SMALL_RATINGS = 'ml-latest-small/ratings.csv'
 
-
-'''
-    user_CF
-    {
-    uid1:{itemid1,itemid2},
-    uid2:{itemid1,itemid2}
-    }
-
-    item_CF
-    {
-    itemid1:{uid1,uid2},
-    itemid2:{uid1,uid2}
-    }
-'''
-#
 
 
 def readDatasByPd():
-    odatas=pd.read_csv(filepaths.ML_LATEST_SMALL_RATINGS,usecols=[0,1])
+    odatas=pd.read_csv(ML_LATEST_SMALL_RATINGS,usecols=[0,1])
     user_dict=dict()
     for d in odatas.values:
         if d[0] in user_dict:
@@ -36,7 +20,7 @@ def readDatasByPd():
     return user_dict
 
 def readItemCfDatasByPd():
-    odatas=pd.read_csv(filepaths.ML_LATEST_SMALL_RATINGS,usecols=[0,1])
+    odatas=pd.read_csv(ML_LATEST_SMALL_RATINGS,usecols=[0,1])
     dct=dict()
     for d in odatas.values:
         if d[1] in dct:
