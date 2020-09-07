@@ -19,6 +19,12 @@ def readDatasByPd():
             user_dict[d[0]] = {d[1]}
     return user_dict
 
+{
+    'userid1':{'itemid1','itemid2'},
+    'userid2':{'itemid2','itemid3'}
+}
+
+
 def readItemCfDatasByPd():
     odatas=pd.read_csv(ML_LATEST_SMALL_RATINGS,usecols=[0,1])
     dct=dict()
@@ -86,8 +92,7 @@ def get_item_CF_recomedations(item_sims,o_set):
     for u in tqdm(o_set):
         recomedations[u] = set()
         for item in o_set[u]:
-            for i in item_sims[item]:
-                recomedations[u]|=set(j['id'] for j in item_sims[item][:5])-o_set[u]
+            recomedations[u]|=set(j['id'] for j in item_sims[item][:5])-o_set[u]
     return recomedations
 
 
@@ -180,6 +185,9 @@ def play():
 
 if __name__ == '__main__':
     play()
+
+
+
 
 
 
