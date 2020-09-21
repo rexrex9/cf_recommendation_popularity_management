@@ -1,13 +1,15 @@
+__author__='雷克斯掷骰子'
+'''
+B站:https://space.bilibili.com/497998686
+头条:https://www.toutiao.com/c/user/token/MS4wLjABAAAAAxu8A9lNX1qfkRKEyU9Uecqa2opPcZufDLWHbv7m-hVdMVPOe7r_i-k6nw4RY61i/
+'''
 
 import pandas as pd
 import random
 import math
 from tqdm import tqdm
 
-
 ML_LATEST_SMALL_RATINGS = 'ml-latest-small/ratings.csv'
-
-
 
 def readDatasByPd():
     odatas=pd.read_csv(ML_LATEST_SMALL_RATINGS,usecols=[0,1])
@@ -18,12 +20,6 @@ def readDatasByPd():
         else:
             user_dict[d[0]] = {d[1]}
     return user_dict
-
-{
-    'userid1':{'itemid1','itemid2'},
-    'userid2':{'itemid2','itemid3'}
-}
-
 
 def readItemCfDatasByPd():
     odatas=pd.read_csv(ML_LATEST_SMALL_RATINGS,usecols=[0,1])
@@ -44,16 +40,18 @@ def getTrainSetAndTestSet(dct):
         trainset[uid] = dct[uid]-testset[uid]
     return trainset,testset
 
-
+#cos相似度
 def getCosSimRate(s1,s2,trainset,popularities):
     return len(trainset[s1]&trainset[s2])/(len(trainset[s1])*len(trainset[s2]))**0.5
 
+#iif相似度
 def getIIFSim(s1,s2,trainset,popularities):
     s=0
     for i in trainset[s1]&trainset[s2]:
         s+=1/popularities[i]
     return s/(len(trainset[s1])*len(trainset[s2]))**0.5
 
+#归一化
 def normalizePopularities(popularities):
     maxp=max(popularities.values())
     norm_ppl={}
@@ -61,7 +59,7 @@ def normalizePopularities(popularities):
         norm_ppl[k]=popularities[k]/maxp
     return norm_ppl
 
-
+#alpha相似度
 def getAlphaSim(s1,s2,trainset,norm_ppl):
     alpha = (1+norm_ppl[s2])/2
     return len(trainset[s1] & trainset[s2]) / (len(trainset[s1])**(1-alpha) * len(trainset[s2])**alpha)
@@ -95,7 +93,7 @@ def get_item_CF_recomedations(item_sims,o_set):
             recomedations[u]|=set(j['id'] for j in item_sims[item][:5])-o_set[u]
     return recomedations
 
-
+#精确率召回率
 def precisionAndRecall(pre,test):
     precision,recall=0,0
     for uid in test:
@@ -107,9 +105,11 @@ def precisionAndRecall(pre,test):
 def sigmoid(x):
     return 1/(1+math.exp(-x))
 
+#每个物品的流行度
 def popularity(x):
     return math.log1p(x)
 
+#总流行度
 def getPopularity(item_set):
     p={}
     for k in item_set:
@@ -186,37 +186,4 @@ def play():
 if __name__ == '__main__':
     play()
 
-
-
-
-
-
-
-'''
-userCF
-精确率: 0.0523414093788954
-召回率: 0.5807093085093415
-流行度: 3.1754908371847206
-userIIF
-精确率: 0.04591475090899522
-召回率: 0.6273353066587025
-流行度: 2.9678558215127344
-userAlpha
-精确率: 0.09197783794303584
-召回率: 0.37284283245655453
-流行度: 3.8165634839891758
-itemCF
-精确率: 0.07626677973686181
-召回率: 0.5381131908798534
-流行度: 3.025877220922286
-itemIIFF
-精确率: 0.08958159294184373
-召回率: 0.5878472322920266
-流行度: 3.0224481726545225
-ItemAlpha
-精确率: 0.03809527281425079
-召回率: 0.38687794423699895
-流行度: 2.709847691028236
-
-'''
 
